@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="headline">30dp</dimen>
+    <dimen name="secondHeadline">20dp</dimen>
+    <dimen name="menuButton">250dp</dimen>
+    <dimen name="gameButtonHeight">20dp</dimen>
+    <dimen name="text">16dp</dimen>
+</resources>

@@ -1,10 +1,19 @@
 <resources>
-    <string name="app_name">TemnePribehy</string>
+    <string name="app_name">Temné Příběhy</string>
 
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_story">Příběh</string>
 
-    <string name="title_activity_story">StoryActivity</string>
-
-    <string name="title_activity_solution">SolutionActivity</string>
+    <string name="title_activity_solution">Co se opravdu stalo</string>
+    <string name="key_description">Klič k řešení</string>
+    <string name="lock_description">Truhla s řešením</string>
+    <string name="new_game">Nová hra</string>
+    <string name="settings">Nastavení</string>
+    <string name="download">Stáhni příběhy</string>
+    <string name="statistics">Statistiky</string>
+    <string name="answer_yes">Ano</string>
+    <string name="answer_no">Ne</string>
+    <string name="back">Zpět</string>
+    <string name="solved">Vyřešeno</string>
+    <string name="solution_title">Řešení příběhu:</string>
+    <string name="end_game">Konec</string>
 </resources>
