@@ -6,7 +6,7 @@
     <string name="title_activity_solution">Co se opravdu stalo</string>
     <string name="key_description">Klič k řešení</string>
     <string name="lock_description">Truhla s řešením</string>
-    <string name="new_game">Nová hra</string>
+    <string name="new_game">Hrát</string>
     <string name="settings">Nastavení</string>
     <string name="download">Stáhni příběhy</string>
     <string name="statistics">Statistiky</string>
@@ -16,4 +16,6 @@
     <string name="solved">Vyřešeno</string>
     <string name="solution_title">Řešení příběhu:</string>
     <string name="end_game">Konec</string>
+    <string name="empty_story">Romeo a Julile leželi na zemi a byli mrtví.</string>
+    <string name="empty_story_title">Romeo a Julie</string>
 </resources>
