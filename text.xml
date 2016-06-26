@@ -1,0 +1,9 @@
+<stories>
+	<story>
+		<title>Nadpis</title>
+		<hint>Nápověda k řešení</hint>
+		<solution>A jak to bylo doopravdy</solution>
+		<imageHint>img/nadpis.jpg</imageHint>
+		<imageSol>img/napisSol.jpg</imageSol>
+	</story>
+</stories>

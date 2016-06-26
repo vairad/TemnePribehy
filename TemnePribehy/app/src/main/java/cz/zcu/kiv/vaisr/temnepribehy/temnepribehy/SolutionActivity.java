@@ -71,8 +71,8 @@ public class SolutionActivity extends AppCompatActivity {
 
     private void setUpTexts() {
         Log.w("TemnePribehy", "nastavuji texty");
-        long storyId = Status.INSTANCE.storyToShow;
-        SQLiteDatabase db = (new Database(this)).getReadableDatabase();
+        long storyId = Status.INSTANCE.getStoryToShow();
+        SQLiteDatabase db = (Database.INSTANCE).getReadableDatabase();
         Cursor constantCursor = db.rawQuery("SELECT title, solution " +
                 "FROM " + Database.TABLE_TEXTS + " WHERE _id = " + storyId, null);
 

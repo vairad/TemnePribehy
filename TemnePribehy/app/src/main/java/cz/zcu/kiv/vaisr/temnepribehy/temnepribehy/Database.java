@@ -12,8 +12,10 @@ import android.util.Log;
  */
 public class Database extends SQLiteOpenHelper {
 
+    public static Database INSTANCE = null;
+
     private static final String DB_NAME = "DarkStoriesDB.db";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 6;
 
     public static final String TABLE_TEXTS = "texts";
     public static final String TABLE_STATS = "stats";
@@ -21,7 +23,7 @@ public class Database extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_TEXTS = "CREATE TABLE "+TABLE_TEXTS+
                                                         " (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                                        " title TEXT," +
+                                                        " title TEXT UNIQUE," +
                                                         " text TEXT," +
                                                         " solution TEXT);";
     private static final String CREATE_TABLE_STATS = "CREATE TABLE "+ TABLE_STATS +
@@ -39,12 +41,21 @@ public class Database extends SQLiteOpenHelper {
     private static final String CREATE_ALL_TABLES = CREATE_TABLE_TEXTS + CREATE_TABLE_STATS;
     private static final String DELETE_ALL_TABLES = DELETE_TABLE_TEXT + DELETE_TABLE_STATS;
 
-    public Database(Context context) {
+    private Database(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+    }
+
+    public static void setUpDatabase(Context context){
+        if(INSTANCE == null){
+            INSTANCE = new Database(context);
+        }else{
+            return;
+        }
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         Log.i("TemnePribehy", "Database.onCreate(): Vytvarim databazi.");
         db.execSQL(CREATE_ALL_TABLES);
 
@@ -63,6 +74,9 @@ public class Database extends SQLiteOpenHelper {
         cv.put("text", "Tento příběh má opravdu dlouhé včechno Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.");
         cv.put("solution","Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.Oknem vklezla kočka do pokoje,  skočila na akvárium, to se převrhlo a rozbilo. Ano, Romeo a Julie byly akvarijní rybičky které zemřely po rozbití akvária.");
         db.insert(TABLE_TEXTS, null, cv);
+
+        Status.INSTANCE.resetStoryNumber();
+        Status.INSTANCE.save();
     }
 
     @Override
@@ -70,5 +84,11 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(DELETE_ALL_TABLES);
         onCreate(db);
 
+    }
+
+    public long insertTexts(ContentValues content){
+        Log.i("TemnePribehy", "Database().insertTexts() - start");
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.insert(TABLE_TEXTS, null, content);
     }
 }

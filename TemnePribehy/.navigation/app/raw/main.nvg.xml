@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigationModel
+  ns = "http://schemas.android.com?import=com.android.tools.idea.editors.navigation.model.*">
+  <locations  
+    class = "java.util.ArrayList">
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "cz.zcu.kiv.vaisr.temnepribehy.temnepribehy.MenuActivity"/>
+      <point      
+        x = "372"      
+        y = "60"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "cz.zcu.kiv.vaisr.temnepribehy.temnepribehy.SolutionActivity"/>
+      <point      
+        x = "2788"      
+        y = "68"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "cz.zcu.kiv.vaisr.temnepribehy.temnepribehy.StoryActivity"/>
+      <point      
+        x = "1656"      
+        y = "56"/>
+    </statePointEntry>
+  </locations>
+</navigationModel>

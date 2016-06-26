@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="names_list">
+        <item>John</item>
+        <item>Peter</item>
+        <item>Charles</item>
+    </string-array>
+    <string-array name="names_list_values">
+        <item>John</item>
+        <item>Peter</item>
+        <item>Charles</item>
+    </string-array>
+
+</resources>

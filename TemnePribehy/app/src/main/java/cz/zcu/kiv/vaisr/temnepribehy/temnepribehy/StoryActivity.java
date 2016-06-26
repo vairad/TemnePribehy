@@ -2,10 +2,12 @@ package cz.zcu.kiv.vaisr.temnepribehy.temnepribehy;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
+import android.media.MediaPlayer;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -18,11 +20,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -39,11 +37,9 @@ public class StoryActivity extends AppCompatActivity {
     TextView text = null;
 
     int storyID;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+    private boolean toSave = false;
+    private int yes, no;
+    private MediaPlayer mp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +61,6 @@ public class StoryActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setUpListeners();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
         title = (TextView) findViewById(R.id.storyTitle);
         text = (TextView) findViewById(R.id.storyText);
@@ -76,12 +69,42 @@ public class StoryActivity extends AppCompatActivity {
             text.setMovementMethod(new ScrollingMovementMethod());
         }
         setUpTexts();
+        yes = Status.INSTANCE.getYes();
+        no = Status.INSTANCE.getNo();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Status.INSTANCE.load();
+        yes = Status.INSTANCE.getYes();
+        no = Status.INSTANCE.getNo();
+        setUpTexts();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        Status.INSTANCE.setNo(no);
+        Status.INSTANCE.setYes(yes);
+        Status.INSTANCE.save();
     }
 
     private void setUpTexts() {
-        long storyId = Status.INSTANCE.storyToShow;
+        long storyId = Status.INSTANCE.getStoryToShow();
 
-        SQLiteDatabase db = (new Database(this)).getReadableDatabase();
+        Database.setUpDatabase(this);
+        SQLiteDatabase db = (Database.INSTANCE).getReadableDatabase();
         Cursor constantCursor = db.rawQuery("SELECT title, text " +
                 "FROM " + Database.TABLE_TEXTS + " WHERE _id = " + storyId, null);
 
@@ -243,56 +266,84 @@ public class StoryActivity extends AppCompatActivity {
     }
 
     public void onYes(View view) {
-        Toast.makeText(this, "Ano!", Toast.LENGTH_SHORT).show();
+        playSound();
+        yes++;
     }
 
     public void onNo(View view) {
-        Toast.makeText(this, "Ne!", Toast.LENGTH_SHORT).show();
+        playSound();
+        no++;
+    }
+
+    public void playSound() {
+        if (mp != null) {
+            mp.release();
+            mp = null;
+        }
+        try {
+            mp = MediaPlayer.create(this, R.raw.cut); //BUT HERE I NEED DEFAULT SOUND!
+            mp.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void onSolved(View view) {
-        Toast.makeText(this, "Vyřešeno", Toast.LENGTH_SHORT).show();
+        showStats();
+        saveStats();
+        resetStats();
+        Status.INSTANCE.moveStory();
+        setUpTexts();
+        text.invalidate();
+        title.invalidate();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Story Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://cz.zcu.kiv.vaisr.temnepribehy.temnepribehy/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
+    private void resetStats() {
+        yes = 0;
+        no = 0;
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Story Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://cz.zcu.kiv.vaisr.temnepribehy.temnepribehy/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
+    private void saveStats() {
+        if(toSave) {
+            //todo save statistics
+        }
+        toSave = false;
     }
+
+    private void showStats() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+// Add the buttons
+        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                toSave = true;
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                toSave = false;
+            }
+        });
+        builder.setCancelable(true);
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                toSave = false;
+            }
+        });
+        builder.setTitle(getString(R.string.congratulation));
+
+        builder.setMessage(getString(R.string.solution) +
+                "\n" + (yes+no) + " " + getString(R.string.asks) +"\n" +
+                getString(R.string.solution_get) + "\n" +
+                yes + "x " + getString(R.string.solution_yes) + "\n" +
+                no  + "x " + getString(R.string.solution_No));
+
+        // Create and show AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 
     public void showLock(){
         Animation showLock;

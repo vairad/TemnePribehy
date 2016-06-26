@@ -18,4 +18,20 @@
     <string name="end_game">Konec</string>
     <string name="empty_story">Romeo a Julile leželi na zemi a byli mrtví.</string>
     <string name="empty_story_title">Romeo a Julie</string>
+
+    <string name="transmission_fail">Došlo k chybě přenosu</string>
+    <string name="cancel_download">Stahování zrušeno</string>
+    <string name="html_fault">Chyba přenosu :</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="save">Uložit výsledek</string>
+    <string name="cancel">Zrušit</string>
+    <string name="congratulation">Výborně, odhalili jste příběh.</string>
+    <string name="solution">Odhalili jste příběh s použítím:</string>
+    <string name="asks">otázek</string>
+    <string name="solution_get">Dostali jste</string>
+    <string name="solution_yes">odpověď Ano</string>
+    <string name="solution_No">odpověď Ne</string>
+    <string name="yes">Ano!</string>
+    <string name="no">Ne!</string>
 </resources>
