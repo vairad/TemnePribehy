@@ -11,42 +11,53 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * Created by olie on 25.6.16.
+ * Třída zachycující aktuální nastavení běžící aplikace.
+ * Jde o správce všech informací mezi aktivitami a třídami.
+ * Třída je jedináček
  */
-public class Status {
-   private Status(Context con) {
+public class AppStatus {
+
+    /**
+     * @param con Context of running app
+     */
+   private AppStatus(Context con) {
        context = con;
        status = new Properties();
+       appFolder = context.getFilesDir().toString();
+       load();
    }
 
+
+    public final String appFolder;
     private Context context;
     private Properties status;
 
-   public static Status INSTANCE = null;
+    public static AppStatus INSTANCE = null;
 
-   private volatile int  storyToShow = 1;
-    private volatile int yes;
-    private volatile int no;
+    private volatile int  storyToShow = 1;
+    private volatile int  yes;
+    private volatile int  no;
 
     String downloadedXml ;
 
-   String downloadUrl = "http://home.zcu.cz/~vaisr/temnePribehy/text.xml";
+    String downloadUrl = "http://home.zcu.cz/~vaisr/temnePribehy/";
+    String remoteStoryFile = "text.xml";
 
     int getStoryToShow(){
         return storyToShow;
     }
 
-   void moveStory() {
+    void moveStory() {
        SQLiteDatabase db = (Database.INSTANCE).getReadableDatabase();
        Cursor constantCursor = db.rawQuery("SELECT * " +
                "FROM " + Database.TABLE_TEXTS + " WHERE 1 ", null);
 
 
-       storyToShow = ((Status.INSTANCE.storyToShow + 1) % (constantCursor.getCount() + 1));
+       storyToShow = ((AppStatus.INSTANCE.storyToShow + 1) % (constantCursor.getCount() + 1));
        if(storyToShow == 0){ // indexovani neni od nuly
            storyToShow = 1;
        }
-       Log.i("TemnePribehy", "Status().moveStory() - to: " + storyToShow);
+       Log.i("TemnePribehy", "AppStatus().moveStory() - to: " + storyToShow);
        constantCursor.close();
    }
 
@@ -98,13 +109,13 @@ public class Status {
     }
 
     public void resetStoryNumber() {
-        Log.i("TemnePribehy", "Status().resetStoryNumber()");
+        Log.i("TemnePribehy", "AppStatus().resetStoryNumber()");
         storyToShow = 1;
     }
 
     public static void setUpStatus(Context context) {
         if(INSTANCE == null){
-            INSTANCE = new Status(context);
+            INSTANCE = new AppStatus(context);
             INSTANCE.downloadedXml = context.getFilesDir()+"/stories.xml";
         }else{
             return;

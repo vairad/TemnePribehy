@@ -19,9 +19,9 @@ public class XmlStoryParser {
     XmlPullParser parser;
     String tmp;
 
-    XmlStoryParser(){
+    XmlStoryParser(String path){
         try{
-            InputStream in = new FileInputStream(Status.INSTANCE.downloadedXml);
+            InputStream in = new FileInputStream(path);
             parse(in);
         }catch (IOException e){
             e.printStackTrace();
@@ -71,6 +71,8 @@ public class XmlStoryParser {
         String title = null;
         String story = null;
         String solution = null;
+        String imgHint = null;
+        String imgSolution = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             Log.i("TemnePribehy", "readStory() - while");
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -93,13 +95,23 @@ public class XmlStoryParser {
                 solution = readSolution(parser) ;
                 Log.i("TemnePribehy", "readStory() - solution " + solution);
 
+            } else if (name.equals("imageHint")) {
+                Log.i("TemnePribehy", " readStory() - imageHint - in");
+                imgHint = readImageHint(parser) ;
+                Log.i("TemnePribehy", "readStory() - imageHint: " + imgHint);
+
+            } else if (name.equals("imageSol")) {
+                Log.i("TemnePribehy", " readStory() - imageSolution - in");
+                imgSolution = readImageSolution(parser) ;
+                Log.i("TemnePribehy", "readStory() - imageSolution: " + imgSolution);
+
             } else {
                 Log.i("TemnePribehy", "readStory() - skip ");
                 skip(parser);
             }
         }
         Log.i("TemnePribehy", "readStories() - end");
-        return new Story(title, story, solution);
+        return new Story(title, story, solution, imgHint, imgSolution);
     }
 
     private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -122,6 +134,22 @@ public class XmlStoryParser {
         parser.require(XmlPullParser.END_TAG, tmp, "solution");
         return title;
     }
+
+    private String readImageHint(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, tmp, "imageHint");
+        String title = readText(parser);
+        parser.require(XmlPullParser.END_TAG, tmp, "imageHint");
+        return title;
+    }
+
+    private String readImageSolution(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, tmp, "imageSol");
+        String title = readText(parser);
+        parser.require(XmlPullParser.END_TAG, tmp, "imageSol");
+        return title;
+    }
+
+
 
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";
@@ -154,20 +182,28 @@ public class XmlStoryParser {
         private final String title;
         private final String story;
         private final String solution;
+        private final String imgHint;
+        private final String imgSol;
 
-    public Story(String title, String story, String solution) {
+    public Story(String title, String story, String solution, String imgHint, String imgSol) {
         this.title = title;
         this.story = story;
         this.solution = solution;
+        this.imgHint = imgHint;
+        this.imgSol = imgSol;
     }
 
     public void saveToDB(){
-        Log.i("TemnePribehy", "Story.saveToDB() " + title + " " + story + " " +solution);
+        Log.i("TemnePribehy", "Story.saveToDB() " + title + " " + story + " " + solution);
 
         ContentValues cv = new ContentValues();
         cv.put("title", title);
         cv.put("text", story);
         cv.put("solution",solution);
+
+        cv.put("imgType", "3");
+        cv.put("imgStory", imgHint);
+        cv.put("imgSolution", imgSol);
 
         Log.i("TemnePribehy", "Story.saveToDB() - before insert ");
         Database.INSTANCE.insertTexts(cv);

@@ -2,6 +2,8 @@ package cz.zcu.kiv.vaisr.temnepribehy.temnepribehy;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -71,9 +73,9 @@ public class SolutionActivity extends AppCompatActivity {
 
     private void setUpTexts() {
         Log.w("TemnePribehy", "nastavuji texty");
-        long storyId = Status.INSTANCE.getStoryToShow();
+        long storyId = AppStatus.INSTANCE.getStoryToShow();
         SQLiteDatabase db = (Database.INSTANCE).getReadableDatabase();
-        Cursor constantCursor = db.rawQuery("SELECT title, solution " +
+        Cursor constantCursor = db.rawQuery("SELECT title, solution, imgType, imgSolution " +
                 "FROM " + Database.TABLE_TEXTS + " WHERE _id = " + storyId, null);
 
         Log.w("TemnePtibehy", "nastavuji texty");
@@ -88,7 +90,18 @@ public class SolutionActivity extends AppCompatActivity {
             text.setText(constantCursor.getString(1));
         }
         if (image != null) {
-            image.setImageResource(R.drawable.no_image_solution);
+            if(constantCursor.getInt(2) == 1){
+                image.setImageResource(constantCursor.getInt(3));
+            }else if(constantCursor.getInt(2) == 2){
+               String path = getFilesDir()+"/"+constantCursor.getString(3);
+
+                Log.i("TemnePribehy", " StoryActivity - show downloaded image: " + path);
+
+                Bitmap bitmap = BitmapFactory.decodeFile(path);
+                image.setImageBitmap(bitmap);
+            }else{
+                image.setImageResource(R.drawable.no_image_story);
+            }
         }
 
         constantCursor.close();

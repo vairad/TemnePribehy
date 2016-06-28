@@ -34,4 +34,6 @@
     <string name="solution_No">odpověď Ne</string>
     <string name="yes">Ano!</string>
     <string name="no">Ne!</string>
+    <string name="download_error">"Chyba stahování: "</string>
+    <string name="download_complete">Databáze příběhů byla aktualizována</string>
 </resources>

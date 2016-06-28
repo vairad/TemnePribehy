@@ -6,11 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,12 +23,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 public class StoryActivity extends AppCompatActivity {
 
     ImageView key;
@@ -36,7 +36,6 @@ public class StoryActivity extends AppCompatActivity {
     TextView title = null;
     TextView text = null;
 
-    int storyID;
     private boolean toSave = false;
     private int yes, no;
     private MediaPlayer mp;
@@ -45,7 +44,6 @@ public class StoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
-
 
         key = (ImageView) findViewById(R.id.imageKey);
         lock = (ImageView) findViewById(R.id.imageLock);
@@ -69,8 +67,8 @@ public class StoryActivity extends AppCompatActivity {
             text.setMovementMethod(new ScrollingMovementMethod());
         }
         setUpTexts();
-        yes = Status.INSTANCE.getYes();
-        no = Status.INSTANCE.getNo();
+        yes = AppStatus.INSTANCE.getYes();
+        no = AppStatus.INSTANCE.getNo();
     }
 
     @Override
@@ -86,44 +84,18 @@ public class StoryActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        Status.INSTANCE.load();
-        yes = Status.INSTANCE.getYes();
-        no = Status.INSTANCE.getNo();
+        AppStatus.INSTANCE.load();
+        yes = AppStatus.INSTANCE.getYes();
+        no = AppStatus.INSTANCE.getNo();
         setUpTexts();
     }
 
     @Override
     protected void onPause(){
         super.onPause();
-        Status.INSTANCE.setNo(no);
-        Status.INSTANCE.setYes(yes);
-        Status.INSTANCE.save();
+        pushStats();
     }
 
-    private void setUpTexts() {
-        long storyId = Status.INSTANCE.getStoryToShow();
-
-        Database.setUpDatabase(this);
-        SQLiteDatabase db = (Database.INSTANCE).getReadableDatabase();
-        Cursor constantCursor = db.rawQuery("SELECT title, text " +
-                "FROM " + Database.TABLE_TEXTS + " WHERE _id = " + storyId, null);
-
-        //set texts
-        TextView title = (TextView) findViewById(R.id.storyTitle);
-        TextView text = (TextView) findViewById(R.id.storyText);
-
-        constantCursor.moveToFirst();
-
-        if (title != null) {
-            title.setText(constantCursor.getString(0));
-        }
-        if (text != null) {
-            text.setText(constantCursor.getString(1));
-        }
-
-        constantCursor.close();
-        db.close();
-    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -226,11 +198,11 @@ public class StoryActivity extends AppCompatActivity {
                         break;
 
                     case DragEvent.ACTION_DRAG_ENTERED:
-                        lock.setVisibility(View.INVISIBLE);
+                        lock.setBackgroundResource(R.drawable.zamek_open);
                         break;
 
                     case DragEvent.ACTION_DRAG_EXITED:
-                        lock.setVisibility(View.VISIBLE);
+                        lock.setBackgroundResource(R.drawable.zamek);
                         break;
 
                     case DragEvent.ACTION_DRAG_LOCATION:
@@ -244,7 +216,7 @@ public class StoryActivity extends AppCompatActivity {
                     case DragEvent.ACTION_DROP:
                         // Do nothing.
                         solutionActivity();
-                        lock.setVisibility(View.VISIBLE);
+                        lock.setBackgroundResource(R.drawable.zamek);
                         break;
                     default:
                         break;
@@ -254,10 +226,49 @@ public class StoryActivity extends AppCompatActivity {
         });
     }
 
+    private void setUpTexts() {
+        long storyId = AppStatus.INSTANCE.getStoryToShow();
+
+        Database.setUpDatabase(this);
+        SQLiteDatabase db = (Database.INSTANCE).getReadableDatabase();
+        Cursor constantCursor = db.rawQuery("SELECT title, text, imgType, imgStory " +
+                "FROM " + Database.TABLE_TEXTS + " WHERE _id = " + storyId, null);
+
+        //set texts
+        TextView title = (TextView) findViewById(R.id.storyTitle);
+        TextView text = (TextView) findViewById(R.id.storyText);
+        ImageView img = (ImageView) findViewById(R.id.imageView);
+
+        constantCursor.moveToFirst();
+
+        if (title != null) {
+            title.setText(constantCursor.getString(0));
+        }
+        if (text != null) {
+            text.setText(constantCursor.getString(1));
+        }
+        if(img != null){
+            if(constantCursor.getInt(2) == 1){
+                img.setImageResource(constantCursor.getInt(3));
+            }else if(constantCursor.getInt(2) == 2){
+                String path = getFilesDir()+"/"+constantCursor.getString(3);
+
+                Log.i("TemnePribehy", " StoryActivity - show downloaded image: " + path);
+
+                Bitmap bitmap = BitmapFactory.decodeFile(path);
+                img.setImageBitmap(bitmap);
+            }else{
+                img.setImageResource(R.drawable.no_image_story);
+            }
+        }
+
+        constantCursor.close();
+        db.close();
+    }
+
+
     public void solutionActivity() {
         Intent i = new Intent(this, SolutionActivity.class);
-        int message = storyID;
-        i.putExtra("STORY_ID", message);
         startActivity(i);
     }
 
@@ -289,13 +300,20 @@ public class StoryActivity extends AppCompatActivity {
     }
 
     public void onSolved(View view) {
+        pushStats();
+
         showStats();
-        saveStats();
         resetStats();
-        Status.INSTANCE.moveStory();
+        AppStatus.INSTANCE.moveStory();
         setUpTexts();
         text.invalidate();
         title.invalidate();
+    }
+
+    private void pushStats() {
+        AppStatus.INSTANCE.setNo(no);
+        AppStatus.INSTANCE.setYes(yes);
+        AppStatus.INSTANCE.save();
     }
 
     private void resetStats() {
@@ -306,7 +324,14 @@ public class StoryActivity extends AppCompatActivity {
 
     private void saveStats() {
         if(toSave) {
-            //todo save statistics
+            int game = AppStatus.INSTANCE.getStoryToShow();
+            int yes = AppStatus.INSTANCE.getYes();
+            int no = AppStatus.INSTANCE.getNo();
+            int time = 666;
+            Stats s = new Stats(game, yes, no, time);
+            Log.i("TemnePribehy", " StoryActivity - saving stats: " + s);
+            s.saveToDB();
+            Log.i("TemnePribehy", " StoryActivity - saving stats continue: ");
         }
         toSave = false;
     }
@@ -317,6 +342,7 @@ public class StoryActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 toSave = true;
+                saveStats();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -331,6 +357,14 @@ public class StoryActivity extends AppCompatActivity {
                 toSave = false;
             }
         });
+
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                toSave = false;
+            }
+        });
+
         builder.setTitle(getString(R.string.congratulation));
 
         builder.setMessage(getString(R.string.solution) +

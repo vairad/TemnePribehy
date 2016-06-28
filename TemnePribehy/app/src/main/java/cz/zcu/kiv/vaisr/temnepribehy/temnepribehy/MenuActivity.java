@@ -25,18 +25,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
+ * Aktivita popisující hlavní menu aplikace
  */
 public class MenuActivity extends AppCompatActivity {
 
     View fullScreenContent;
 
     ProgressDialog mProgressDialog;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+
+
     private GoogleApiClient client;
 
     @Override
@@ -56,79 +53,15 @@ public class MenuActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-        prepareLoading();
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
-        Status.setUpStatus(this);
+        prepareLoadingBar();
+        AppStatus.setUpStatus(this);
         Database.setUpDatabase(this);
     }
 
-    private void prepareLoading() {
-        mProgressDialog = new ProgressDialog(MenuActivity.this);
-        mProgressDialog.setMessage("Aktualizuji databázi příběhů");
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialog.setCancelable(true);
-    }
-
-    private void updateStories() {
-        // execute this when the downloader must be fired
-        final UpdateStoriesTask updateTask = new UpdateStoriesTask(MenuActivity.this);
-        updateTask.execute(Status.INSTANCE.downloadUrl);
-
-        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                updateTask.cancel(true);
-            }
-        });
-
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            fullScreenContent.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }
-
-    public int getStoryId() {
-        return 55;
-        //Todo vyber cisla pribehu
-    }
-
-    public void onRunGame(View view) {
-        Intent i = new Intent(this, StoryActivity.class);
-        int message = getStoryId();
-        i.putExtra("STORY_ID", message);
-        startActivity(i);
-    }
-
-    public void onStatistics(View view) {
-        Toast.makeText(this, "Statistiky", Toast.LENGTH_SHORT).show();
-    }
-
-    public void onSettings(View view) {
-        Toast.makeText(this, "Nastaveni", Toast.LENGTH_SHORT).show();
-    }
-
-    public void onDownload(View view) {
-        Toast.makeText(this, "Stahování", Toast.LENGTH_SHORT).show();
-        updateStories();
-    }
-
-    public void onEnd(View view) {
-        finish();
-    }
 
     @Override
     public void onStart() {
@@ -139,7 +72,7 @@ public class MenuActivity extends AppCompatActivity {
         client.connect();
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.
-                "Menu Page", // TODO: Define a title for the content shown.
+                "MenuActivity", // TODO: Define a title for the content shown.
                 // TODO: If you have web page content that matches this app activity's content,
                 // make sure this auto-generated web page URL is correct.
                 // Otherwise, set the URL to null.
@@ -170,8 +103,84 @@ public class MenuActivity extends AppCompatActivity {
         client.disconnect();
     }
 
-    // usually, subclasses of AsyncTask are declared inside the activity class.
-    // that way, you can easily modify the UI thread from here
+    /**
+     * Metoda zajistí zakrytí programové lišty a korektně nastaví vzhled okna i po minimalizaci
+     * @param hasFocus
+     */
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            fullScreenContent.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
+//==================================================================================================
+
+    public void onRunGame(View view) {
+        Intent i = new Intent(this, StoryActivity.class);
+        startActivity(i);
+    }
+
+    public void onStatistics(View view) {
+        Toast.makeText(this, "Statistiky", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onSettings(View view) {
+        Toast.makeText(this, "Nastaveni", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onDownload(View view) {
+        Toast.makeText(this, "Stahování", Toast.LENGTH_SHORT).show();
+        updateStories();
+    }
+
+    public void onEnd(View view) {
+        finish();
+    }
+
+
+//==================================================================================================
+
+    /**
+     * Metoda připraví skrytou načítací lištu.
+     */
+    private void prepareLoadingBar() {
+        mProgressDialog = new ProgressDialog(MenuActivity.this);
+        mProgressDialog.setMessage("Aktualizuji databázi příběhů");
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setCancelable(true);
+    }
+
+
+    /**
+     * Metoda spustí stahování příběhů z webu v asynchrinním úkolu
+     */
+    private void updateStories() {
+        // execute this when the downloader must be fired
+        final UpdateStoriesTask updateTask = new UpdateStoriesTask(MenuActivity.this);
+        updateTask.execute();
+
+        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                updateTask.cancel(true);
+            }
+        });
+
+    }
+
+
+    /**
+     * Asynchronní úkol stažení všech příběhů online
+     */
     private class UpdateStoriesTask extends AsyncTask<String, Integer, String> {
 
         private Context context;
@@ -183,18 +192,24 @@ public class MenuActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... sUrl) {
-            downloadFile(sUrl);
-            new XmlStoryParser();
+            Log.i("TemnePribehy", " doInBack() - start");
+            downloadXmlFile(AppStatus.INSTANCE.downloadUrl + "/" + AppStatus.INSTANCE.remoteStoryFile);
+            Log.println(Log.VERBOSE, "TemnePribehy", " doInBack() - xmlDownloaded");
+            new XmlStoryParser(AppStatus.INSTANCE.downloadedXml);
+            Log.println(Log.VERBOSE, "TemnePribehy", " doInBack() - xmlParsed");
+            new ImageDownloader(AppStatus.INSTANCE.downloadUrl);
+            Log.println(Log.VERBOSE, "TemnePribehy", " doInBack() - images downloaded");
+            Log.i("TemnePribehy", " doInBack() - end");
 
             return null;
         }
 
-        private String downloadFile(String... sUrl) {
+        private String downloadXmlFile(String sUrl) {
             InputStream input = null;
             OutputStream output = null;
             HttpURLConnection connection = null;
             try {
-                URL url = new URL(sUrl[0]);
+                URL url = new URL(sUrl);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -206,7 +221,7 @@ public class MenuActivity extends AppCompatActivity {
 
                 // download the file
                 input = connection.getInputStream();
-                output = new FileOutputStream(cz.zcu.kiv.vaisr.temnepribehy.temnepribehy.Status.INSTANCE.downloadedXml);
+                output = new FileOutputStream(AppStatus.INSTANCE.downloadedXml);
 
                 byte data[] = new byte[4096];
                 long total = 0;
@@ -221,7 +236,7 @@ public class MenuActivity extends AppCompatActivity {
                     output.write(data, 0, count);
                 }
             } catch (Exception e) {
-                Log.e("TemnePribehy", e.getLocalizedMessage());
+                Log.e("TemnePribehy", "Chyba stahování XML" ,  e);
                 return getString(R.string.transmission_fail);
             } finally {
                 try {
@@ -251,18 +266,13 @@ public class MenuActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onProgressUpdate(Integer... progress) {
-            super.onProgressUpdate(progress);
-        }
-
-        @Override
         protected void onPostExecute(String result) {
             mWakeLock.release();
             mProgressDialog.dismiss();
             if (result != null)
-                Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getString(R.string.download_error) + result, Toast.LENGTH_LONG).show();
             else{
-                Toast.makeText(context, "Databáze příběhů byla aktualizována", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, getString(R.string.download_complete), Toast.LENGTH_SHORT).show();
             }
         }
 

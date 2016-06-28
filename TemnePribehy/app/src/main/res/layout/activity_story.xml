@@ -79,10 +79,11 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:id="@+id/imageLock"
-                android:background="@mipmap/ic_launcher"
+                android:background="@drawable/zamek"
                 android:contentDescription="@string/lock_description"
                 android:contextClickable="false"
-                android:scaleType="centerInside" />
+                android:scaleType="centerInside"
+                />
         </LinearLayout>
 
         <LinearLayout
