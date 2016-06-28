@@ -26,6 +26,7 @@ public class SolutionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("TemnePribehy", "SolutionActivity.onCreate()");
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_solution);
@@ -50,6 +51,7 @@ public class SolutionActivity extends AppCompatActivity {
         }
 
         setUpTexts();
+        Log.i("TemnePribehy", "SolutionActivity.onCreate() - end");
     }
 
     @Override
@@ -67,18 +69,19 @@ public class SolutionActivity extends AppCompatActivity {
 
 
     public void onBackEvent(View view){
+        Log.i("TemnePribehy", "SolutionActivity.onBackEvent()");
         finish();
     }
 
 
     private void setUpTexts() {
-        Log.w("TemnePribehy", "nastavuji texty");
+        Log.d("TemnePribehy", "SolutionActivity.setUpTexts()");
         long storyId = AppStatus.INSTANCE.getStoryToShow();
         SQLiteDatabase db = (Database.INSTANCE).getReadableDatabase();
         Cursor constantCursor = db.rawQuery("SELECT title, solution, imgType, imgSolution " +
                 "FROM " + Database.TABLE_TEXTS + " WHERE _id = " + storyId, null);
 
-        Log.w("TemnePtibehy", "nastavuji texty");
+        Log.i("TemnePribehy", "SolutionActivity.setUpTexts() - texty nacteny z db");
         //set texts
 
         constantCursor.moveToFirst();
@@ -106,6 +109,7 @@ public class SolutionActivity extends AppCompatActivity {
 
         constantCursor.close();
         db.close();
+        Log.i("TemnePribehy", "SolutionActivity.setUpTexts() - end");
     }
 
 

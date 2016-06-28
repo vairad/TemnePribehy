@@ -36,8 +36,7 @@ public class ImageDownloader {
             Log.i("TemnePribehy", " ImageDownloader.createImgFolder() - creating ");
             boolean result = false;
             try{
-                theDir.mkdir();
-                result = true;
+                result = theDir.mkdir();
             }
             catch(SecurityException se){
                 Log.e("TemnePribehy", " ImageDownloader.createImgFolder() - Security exception ", se);
@@ -59,8 +58,8 @@ public class ImageDownloader {
         while (constantCursor.moveToNext()) {
             Log.i("TemnePribehy", " ImageDownloader.downloadImages() - images for "+ constantCursor.getString(0));
 
-            boolean succes = true;
-            succes &= downloadImage(constantCursor.getString(3));
+            boolean succes;
+            succes = downloadImage(constantCursor.getString(3));
             succes &= downloadImage(constantCursor.getString(4));
             if(succes){
                 Log.i("TemnePribehy", "ImageDownloader.downloadImages()  try to modify database");
@@ -71,7 +70,7 @@ public class ImageDownloader {
                     String where = "title=?";
                     String[] whereArgs = new String[] {constantCursor.getString(0)};
 
-                    db.update(Database.TABLE_TEXTS, dataToInsert, where, whereArgs);
+                    dbToWrite.update(Database.TABLE_TEXTS, dataToInsert, where, whereArgs);
 
                     Log.i("TemnePribehy", "ImageDownloader.downloadImages() set up showable");
                 }catch (Exception e){
@@ -80,6 +79,7 @@ public class ImageDownloader {
 
             }
         }
+        constantCursor.close();
         Log.i("TemnePribehy", " ImageDownloader.downloadImages() - out");
     }
 
@@ -99,6 +99,7 @@ public class ImageDownloader {
 
             // Kontrola korektního přenosu souboru
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                Log.d("TemnePribehy", " ImageDownloader.downloadImages() http error:");
                 return false;
             }
 

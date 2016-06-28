@@ -9,21 +9,23 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 
 public class StoryActivity extends AppCompatActivity {
@@ -39,9 +41,15 @@ public class StoryActivity extends AppCompatActivity {
     private boolean toSave = false;
     private int yes, no;
     private MediaPlayer mp;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("TemnePribehy", " StoryActivity.onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
 
@@ -69,31 +77,73 @@ public class StoryActivity extends AppCompatActivity {
         setUpTexts();
         yes = AppStatus.INSTANCE.getYes();
         no = AppStatus.INSTANCE.getNo();
+        Log.i("TemnePribehy", " StoryActivity.onCreate() - end");
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
     public void onStart() {
+        Log.d("TemnePribehy", " StoryActivity.onStart()");
         super.onStart();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Story Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://cz.zcu.kiv.vaisr.temnepribehy.temnepribehy/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
     }
 
     @Override
     public void onStop() {
+        Log.d("TemnePribehy", " StoryActivity.onStop()");
         super.onStop();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Story Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app deep link URI is correct.
+                Uri.parse("android-app://cz.zcu.kiv.vaisr.temnepribehy.temnepribehy/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.disconnect();
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
+        Log.d("TemnePribehy", " StoryActivity.onResume()");
         super.onResume();
         AppStatus.INSTANCE.load();
         yes = AppStatus.INSTANCE.getYes();
         no = AppStatus.INSTANCE.getNo();
         setUpTexts();
+        Log.i("TemnePribehy", " StoryActivity.onResume() - end");
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
+        Log.d("TemnePribehy", " StoryActivity.onPause()");
         super.onPause();
         pushStats();
+        Log.i("TemnePribehy", " StoryActivity.onPause() - end");
     }
 
 
@@ -111,7 +161,7 @@ public class StoryActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+/*    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
@@ -120,9 +170,10 @@ public class StoryActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     private void setUpListeners() {
+        Log.d("TemnePribehy", " StoryActivity.setUpListeners()");
         key.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -224,9 +275,11 @@ public class StoryActivity extends AppCompatActivity {
                 return true;
             }
         });
+        Log.v("TemnePribehy", " StoryActivity.setUpListeners() - end");
     }
 
     private void setUpTexts() {
+        Log.d("TemnePribehy", " StoryActivity.setUpTexts()");
         long storyId = AppStatus.INSTANCE.getStoryToShow();
 
         Database.setUpDatabase(this);
@@ -247,46 +300,52 @@ public class StoryActivity extends AppCompatActivity {
         if (text != null) {
             text.setText(constantCursor.getString(1));
         }
-        if(img != null){
-            if(constantCursor.getInt(2) == 1){
+        if (img != null) {
+            if (constantCursor.getInt(2) == 1) {
                 img.setImageResource(constantCursor.getInt(3));
-            }else if(constantCursor.getInt(2) == 2){
-                String path = getFilesDir()+"/"+constantCursor.getString(3);
+            } else if (constantCursor.getInt(2) == 2) {
+                String path = getFilesDir() + "/" + constantCursor.getString(3);
 
                 Log.i("TemnePribehy", " StoryActivity - show downloaded image: " + path);
 
                 Bitmap bitmap = BitmapFactory.decodeFile(path);
                 img.setImageBitmap(bitmap);
-            }else{
+            } else {
                 img.setImageResource(R.drawable.no_image_story);
             }
         }
 
         constantCursor.close();
         db.close();
+        Log.v("TemnePribehy", " StoryActivity.setUpTexts() - end");
     }
 
 
     public void solutionActivity() {
+        Log.d("TemnePribehy", " StoryActivity.solutionActivity()");
         Intent i = new Intent(this, SolutionActivity.class);
         startActivity(i);
     }
 
     public void onMenu(View view) {
+        Log.v("TemnePribehy", " StoryActivity.onMenu()");
         finish();
     }
 
     public void onYes(View view) {
+        Log.v("TemnePribehy", " StoryActivity.onYes()");
         playSound();
         yes++;
     }
 
     public void onNo(View view) {
+        Log.v("TemnePribehy", " StoryActivity.onNo()");
         playSound();
         no++;
     }
 
     public void playSound() {
+        Log.v("TemnePribehy", " StoryActivity.playSound()");
         if (mp != null) {
             mp.release();
             mp = null;
@@ -297,9 +356,11 @@ public class StoryActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Log.v("TemnePribehy", " StoryActivity.playSound() - end");
     }
 
     public void onSolved(View view) {
+        Log.d("TemnePribehy", " StoryActivity.onSolved()");
         pushStats();
 
         showStats();
@@ -308,22 +369,26 @@ public class StoryActivity extends AppCompatActivity {
         setUpTexts();
         text.invalidate();
         title.invalidate();
+        Log.i("TemnePribehy", " StoryActivity.onSolved() - end");
     }
 
     private void pushStats() {
+        Log.d("TemnePribehy", " StoryActivity.pushStats()");
         AppStatus.INSTANCE.setNo(no);
         AppStatus.INSTANCE.setYes(yes);
         AppStatus.INSTANCE.save();
     }
 
     private void resetStats() {
+        Log.d("TemnePribehy", " StoryActivity.resetStats()");
         yes = 0;
         no = 0;
     }
 
 
     private void saveStats() {
-        if(toSave) {
+        Log.d("TemnePribehy", " StoryActivity.saveStats()");
+        if (toSave) {
             int game = AppStatus.INSTANCE.getStoryToShow();
             int yes = AppStatus.INSTANCE.getYes();
             int no = AppStatus.INSTANCE.getNo();
@@ -331,12 +396,14 @@ public class StoryActivity extends AppCompatActivity {
             Stats s = new Stats(game, yes, no, time);
             Log.i("TemnePribehy", " StoryActivity - saving stats: " + s);
             s.saveToDB();
-            Log.i("TemnePribehy", " StoryActivity - saving stats continue: ");
+            Log.i("TemnePribehy", " StoryActivity - saving stats continue");
         }
         toSave = false;
+        Log.d("TemnePribehy", " StoryActivity.saveStats() - end");
     }
 
     private void showStats() {
+        Log.d("TemnePribehy", "StoryActivity.showStats()");
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 // Add the buttons
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
@@ -368,20 +435,23 @@ public class StoryActivity extends AppCompatActivity {
         builder.setTitle(getString(R.string.congratulation));
 
         builder.setMessage(getString(R.string.solution) +
-                "\n" + (yes+no) + " " + getString(R.string.asks) +"\n" +
+                "\n" + (yes + no) + " " + getString(R.string.asks) + "\n" +
                 getString(R.string.solution_get) + "\n" +
                 yes + "x " + getString(R.string.solution_yes) + "\n" +
-                no  + "x " + getString(R.string.solution_No));
+                no + "x " + getString(R.string.solution_No));
 
         // Create and show AlertDialog
         AlertDialog dialog = builder.create();
         dialog.show();
+        Log.i("TemnePribehy", " StoryActivity.showStats() - end");
     }
 
 
-    public void showLock(){
+    public void showLock() {
+        Log.v("TemnePribehy", " StoryActivity.showLock()");
         Animation showLock;
-        showLock = AnimationUtils.loadAnimation(this,R.anim.lock_show);
+        showLock = AnimationUtils.loadAnimation(this, R.anim.lock_show);
         lock.startAnimation(showLock);
+        Log.v("TemnePribehy", " StoryActivity.showLock() - end");
     }
 }

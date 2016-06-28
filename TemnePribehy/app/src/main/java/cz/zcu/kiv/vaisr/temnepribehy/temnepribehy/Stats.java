@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.util.Log;
 
 /**
- * Created by olie on 28.6.16.
+ * Přepravka pro zápis statistiky
  */
 public class Stats {
     private final int game;

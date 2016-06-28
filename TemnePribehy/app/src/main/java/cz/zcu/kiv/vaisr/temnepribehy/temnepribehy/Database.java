@@ -56,8 +56,6 @@ public class Database extends SQLiteOpenHelper {
     public static void setUpDatabase(Context context){
         if(INSTANCE == null){
             INSTANCE = new Database(context);
-        }else{
-            return;
         }
     }
 
@@ -96,14 +94,10 @@ public class Database extends SQLiteOpenHelper {
 
     }
 
-    /**
-     * Při aktualizaci je zcela zrušena původní databáze.
-     * @param db
-     * @param oldVersion
-     * @param newVersion
-     */
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.i("TemnePribehy", "Database().onUpgrade()");
         db.execSQL(DELETE_ALL_TABLES);
         onCreate(db);
     }

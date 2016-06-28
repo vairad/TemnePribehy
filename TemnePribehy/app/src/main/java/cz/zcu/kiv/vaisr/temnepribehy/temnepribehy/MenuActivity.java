@@ -38,6 +38,7 @@ public class MenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("TemnePribehy", "MenuActivity.onCreate()");
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_menu);
@@ -60,11 +61,13 @@ public class MenuActivity extends AppCompatActivity {
         prepareLoadingBar();
         AppStatus.setUpStatus(this);
         Database.setUpDatabase(this);
+        Log.i("TemnePribehy", "MenuActivity.onCreate() - end");
     }
 
 
     @Override
     public void onStart() {
+        Log.d("TemnePribehy", "MenuActivity.onStart()");
         super.onStart();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -81,10 +84,12 @@ public class MenuActivity extends AppCompatActivity {
                 Uri.parse("android-app://cz.zcu.kiv.vaisr.temnepribehy.temnepribehy/http/host/path")
         );
         AppIndex.AppIndexApi.start(client, viewAction);
+        Log.i("TemnePribehy", "MenuActivity.onStart() - end");
     }
 
     @Override
     public void onStop() {
+        Log.d("TemnePribehy", "MenuActivity.onStop()");
         super.onStop();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -101,11 +106,12 @@ public class MenuActivity extends AppCompatActivity {
         );
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
+        Log.i("TemnePribehy", "MenuActivity.onStop() - end");
     }
 
     /**
      * Metoda zajistí zakrytí programové lišty a korektně nastaví vzhled okna i po minimalizaci
-     * @param hasFocus
+     * @param hasFocus hasFocus
      */
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -124,11 +130,13 @@ public class MenuActivity extends AppCompatActivity {
 //==================================================================================================
 
     public void onRunGame(View view) {
+        Log.d("TemnePribehy", "MenuActivity.onRunGame()");
         Intent i = new Intent(this, StoryActivity.class);
         startActivity(i);
     }
 
     public void onStatistics(View view) {
+        Log.d("TemnePribehy", "MenuActivity.onStatistics()");
         Toast.makeText(this, "Statistiky", Toast.LENGTH_SHORT).show();
     }
 
@@ -137,11 +145,13 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public void onDownload(View view) {
+        Log.d("TemnePribehy", "MenuActivity.onDownload()");
         Toast.makeText(this, "Stahování", Toast.LENGTH_SHORT).show();
         updateStories();
     }
 
     public void onEnd(View view) {
+        Log.d("TemnePribehy", "MenuActivity.onEnd()");
         finish();
     }
 
@@ -152,6 +162,7 @@ public class MenuActivity extends AppCompatActivity {
      * Metoda připraví skrytou načítací lištu.
      */
     private void prepareLoadingBar() {
+        Log.v("TemnePribehy", "MenuActivity.prepareLoadingBar()");
         mProgressDialog = new ProgressDialog(MenuActivity.this);
         mProgressDialog.setMessage("Aktualizuji databázi příběhů");
         mProgressDialog.setIndeterminate(true);
@@ -164,6 +175,7 @@ public class MenuActivity extends AppCompatActivity {
      * Metoda spustí stahování příběhů z webu v asynchrinním úkolu
      */
     private void updateStories() {
+        Log.v("TemnePribehy", "MenuActivity.updateStories()");
         // execute this when the downloader must be fired
         final UpdateStoriesTask updateTask = new UpdateStoriesTask(MenuActivity.this);
         updateTask.execute();
@@ -192,13 +204,13 @@ public class MenuActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... sUrl) {
-            Log.i("TemnePribehy", " doInBack() - start");
+            Log.d("TemnePribehy", " doInBack() - start");
             downloadXmlFile(AppStatus.INSTANCE.downloadUrl + "/" + AppStatus.INSTANCE.remoteStoryFile);
-            Log.println(Log.VERBOSE, "TemnePribehy", " doInBack() - xmlDownloaded");
+            Log.v("TemnePribehy", " doInBack() - xmlDownloaded");
             new XmlStoryParser(AppStatus.INSTANCE.downloadedXml);
-            Log.println(Log.VERBOSE, "TemnePribehy", " doInBack() - xmlParsed");
+            Log.v("TemnePribehy", " doInBack() - xmlParsed");
             new ImageDownloader(AppStatus.INSTANCE.downloadUrl);
-            Log.println(Log.VERBOSE, "TemnePribehy", " doInBack() - images downloaded");
+            Log.v("TemnePribehy", " doInBack() - images downloaded");
             Log.i("TemnePribehy", " doInBack() - end");
 
             return null;
@@ -235,6 +247,7 @@ public class MenuActivity extends AppCompatActivity {
                     total += count;
                     output.write(data, 0, count);
                 }
+                Log.e("TemnePribehy", "Staženo XML o velikosti: "+ total);
             } catch (Exception e) {
                 Log.e("TemnePribehy", "Chyba stahování XML" ,  e);
                 return getString(R.string.transmission_fail);

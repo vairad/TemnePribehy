@@ -18,66 +18,88 @@ import java.util.Properties;
 public class AppStatus {
 
     /**
-     * @param con Context of running app
-     */
-   private AppStatus(Context con) {
-       context = con;
-       status = new Properties();
-       appFolder = context.getFilesDir().toString();
-       load();
-   }
+    * @param con Context of running app
+    */
+    private AppStatus(Context con) {
+        context = con;
+        status = new Properties();
+        appFolder = context.getFilesDir().toString();
+        downloadedXml = appFolder+"/stories.xml";
+        load();
+    }
 
 
+    public static void setUpStatus(Context context) {
+        if(INSTANCE == null){
+            INSTANCE = new AppStatus(context);
+        }
+    }
+
+    /** cesta k souborům aplikace */
     public final String appFolder;
+    /** context aplikace */
     private Context context;
+    /** nastavení aplikace */
     private Properties status;
 
+    /** Instance jedináčka */
     public static AppStatus INSTANCE = null;
 
+    /** atributy stavu hry */
     private volatile int  storyToShow = 1;
     private volatile int  yes;
     private volatile int  no;
 
+    /** cesta ke staženému xml s hrami */
     String downloadedXml ;
 
     String downloadUrl = "http://home.zcu.cz/~vaisr/temnePribehy/";
     String remoteStoryFile = "text.xml";
 
-    int getStoryToShow(){
-        return storyToShow;
-    }
 
     void moveStory() {
-       SQLiteDatabase db = (Database.INSTANCE).getReadableDatabase();
-       Cursor constantCursor = db.rawQuery("SELECT * " +
+        SQLiteDatabase db = (Database.INSTANCE).getReadableDatabase();
+
+        Log.i("TemnePribehy", "AppStatus().moveStory() - select all stories: " + storyToShow);
+        Cursor constantCursor = db.rawQuery("SELECT * " +
                "FROM " + Database.TABLE_TEXTS + " WHERE 1 ", null);
 
 
-       storyToShow = ((AppStatus.INSTANCE.storyToShow + 1) % (constantCursor.getCount() + 1));
-       if(storyToShow == 0){ // indexovani neni od nuly
-           storyToShow = 1;
-       }
-       Log.i("TemnePribehy", "AppStatus().moveStory() - to: " + storyToShow);
-       constantCursor.close();
-   }
+        storyToShow = ((AppStatus.INSTANCE.storyToShow + 1) % (constantCursor.getCount() + 1));
+        if(storyToShow == 0){ // indexovani neni od nuly
+            storyToShow = 1;
+        }
+        Log.i("TemnePribehy", "AppStatus().moveStory() - to: " + storyToShow);
+        constantCursor.close();
+    }
+
+    int getStoryToShow(){
+        Log.v("TemnePribehy", "AppStatus().getStoryToShow()");
+        return storyToShow;
+    }
 
     public int getYes() {
+        Log.v("TemnePribehy", "AppStatus().getYes()");
         return yes;
     }
 
     public int getNo() {
+        Log.v("TemnePribehy", "AppStatus().getNo()");
         return no;
     }
 
     public void setYes(int yes) {
+        Log.v("TemnePribehy", "AppStatus().setYes() to :"+ yes);
         this.yes = yes;
     }
 
     public void setNo(int no) {
+        Log.v("TemnePribehy", "AppStatus().setNo() to :"+ no);
         this.no = no;
     }
 
     public void save(){
+        Log.i("TemnePribehy", "AppStatus().save():");
         status.setProperty("yes", Integer.toString(yes));
         status.setProperty("no", Integer.toString(no));
         status.setProperty("story", Integer.toString(storyToShow));
@@ -87,19 +109,19 @@ public class AppStatus {
             status.storeToXML(fs, "Setup of app");
             fs.close();
         } catch (IOException e) {
-            e.printStackTrace();
-            return;
+            Log.e("TemnePribehy", "AppStatus().save() IO error:", e);
         }
 
     }
 
     public void load(){
+        Log.i("TemnePribehy", "AppStatus().load():");
         try {
             FileInputStream fs = new FileInputStream(context.getFilesDir()+"/setup.xml");
             status.loadFromXML(fs);
             fs.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("TemnePribehy", "AppStatus().load() IO error:", e);
             return;
         }
 
@@ -111,15 +133,6 @@ public class AppStatus {
     public void resetStoryNumber() {
         Log.i("TemnePribehy", "AppStatus().resetStoryNumber()");
         storyToShow = 1;
-    }
-
-    public static void setUpStatus(Context context) {
-        if(INSTANCE == null){
-            INSTANCE = new AppStatus(context);
-            INSTANCE.downloadedXml = context.getFilesDir()+"/stories.xml";
-        }else{
-            return;
-        }
     }
 }
 
