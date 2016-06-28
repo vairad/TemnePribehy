@@ -1,0 +1,46 @@
+<stories>
+	<story>
+		<title>Zkouška obrázku</title>
+		<hint>Nic sofistiovaného.</hint>
+		<solution>Jenom admin potřeboval příběh ke zkoušení stahování obrázků.</solution>
+		<imageHint>img/1h.jpg</imageHint>
+		<imageSol>img/1s.jpg</imageSol>
+	</story>
+	<story>
+		<title>Nešťastný let</title>
+		<hint>Generální ředitel jednoho velkého podniku měl letět odpoledne do vzdáleného města, kde byl pobočný závod. Ráno však přišel k němu noční vrátný, známý svou pověrčivostí, a začal ho z této cesty zrazovat. „Dnes se mně zdálo, že se letadlo, kterým chcete letět, zřítilo,“ říkal. Generální ředitel vrátného odbyl, ale pak mu to přece nedalo, myslel stále na padající letadlo a nakonec cestu odložil. Druhého dne se v novinách dočetl, že se letadlo, kterým měl letět, skutečně zřítilo. Zavolal vrátného a v pohnutí mu děkoval za záchranu života. „Dávám vám jako odměnu 5000 Kč, ale protože mám pevné zásady, zároveň vás propouštím.“ Proč dostal vrátný výpověď?</hint>
+		<solution>Noční vrátný řekl ráno, že se mu dnes zdálo o letadlu, spal tedy ve službě, a proto byl propuštěn.</solution>
+		<imageHint>img/nadpis.jpg</imageHint>
+		<imageSol>img/napisSol.jpg</imageSol>
+	</story>
+	<story>
+		<title>Slovo dalo slovo</title>
+		<hint>U hospodáře byli tři zájemci o selata. Ve vepřinci byla právě tři prasátka. Každý si chytil jedno a ještě dvě selata zbyla. Jak je to možné? </hint>
+		<solution>Jeden ze zájemců o sele se jmenoval Každý. Ten chytil sele a další dva zájemci čekali.</solution>
+		<imageHint>img/nadpis.jpg</imageHint>
+		<imageSol>img/napisSol.jpg</imageSol>
+	</story>
+	<story>
+		<title>Bratři</title>
+		<hint>Dva bratři pracují v cirkuse a bydlí v maringotce. Jeden z nich jednou přijde do svého, pečlivě uklizeného pokoje. Zavrávorá a spáchá sebevraždu. Proč?</hint>
+		<solution>Bratři jsou liliputáni a vystupují v cirkusu jako klauni. Cirkus se dostal do krize a jeden z bratrů musí být propuštěn. Jeden bratr vymyslel lest: zkrátil u všeho nábytku nohy a pak po sobě pečlivě zahladil stopy. Druhý bratr přišel do maringotky, myslel si, že vyrostl a zabil se.</solution>
+		<imageHint>img/nadpis.jpg</imageHint>
+		<imageSol>img/napisSol.jpg</imageSol>
+	</story>
+	<story>
+		<title>Načasování</title>
+		<hint>Muž řekl ženě, že ji miluje a ona zemřela.</hint>
+		<solution>Byli to manželé artisti. Muž své vyznání řekl právě ve chvíli, když oba viseli na visuté hrazdě nechráněni sítí a muž držel ženu v zubech.</solution>
+		<imageHint>img/nadpis.jpg</imageHint>
+		<imageSol>img/napisSol.jpg</imageSol>
+	</story>
+	
+	<story>
+		<title>Vysoká hra</title>
+		<hint>Pán Smith jezdí každý den při návratu domů výtahem do 26. poschodí, jen v neděli jezdí jen do 24. poschodí a zbylá dvě poschodí vyjde po schodech. Proč?</hint>
+		<solution>Pán Smith je trpaslík, na vyšší číslo než 24 nedosáhne. V neděli má liftboy volno.</solution>
+		<imageHint>img/nadpis.jpg</imageHint>
+		<imageSol>img/napisSol.jpg</imageSol>
+	</story>
+	
+</stories>
