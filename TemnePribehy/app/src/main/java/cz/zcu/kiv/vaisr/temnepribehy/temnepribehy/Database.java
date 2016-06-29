@@ -2,9 +2,13 @@ package cz.zcu.kiv.vaisr.temnepribehy.temnepribehy;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -39,6 +43,8 @@ public class Database extends SQLiteOpenHelper {
             "FOREIGN KEY(game) REFERENCES "+TABLE_TEXTS+"(_id)" +
             ");";
 
+   // private static final String CREATE_TABLE_STATS = "CREATE TABLE stats (_id INTEGER PRIMARY KEY AUTOINCREMENT,  game INT NOT NULL,  yes INT, no INT,  time INT, FOREIGN KEY(game) REFERENCES texts (_id) );";
+
     private static final String DELETE_TABLE_TEXT = "DROP TABLE IF EXISTS " + TABLE_TEXTS + ";";
     private static final String DELETE_TABLE_STATS = "DROP TABLE IF EXISTS " + TABLE_STATS + ";";
 
@@ -65,7 +71,8 @@ public class Database extends SQLiteOpenHelper {
         AppStatus.INSTANCE.save();
 
         Log.i("TemnePribehy", "Database.onCreate(): Vytvarim databazi.");
-        db.execSQL(CREATE_ALL_TABLES);
+        db.execSQL(CREATE_TABLE_TEXTS);
+        db.execSQL(CREATE_TABLE_STATS);
 
         ContentValues cv = new ContentValues();
         cv.put("title", "Romeo a Julie");
@@ -91,6 +98,13 @@ public class Database extends SQLiteOpenHelper {
         cv.put("imgStory", R.drawable.image_story_dlouhy);
         cv.put("imgSolution", R.drawable.image_solution_dlouhy);
         db.insert(TABLE_TEXTS, null, cv);
+/*
+        cv.put("game", "1");
+        cv.put("yes", "-1" );
+        cv.put("no", "-1");
+        cv.put("time", "-1");
+        db.insert(TABLE_STATS, null, cv);*/
+
 
     }
 
@@ -111,5 +125,28 @@ public class Database extends SQLiteOpenHelper {
         Log.i("TemnePribehy", "Database().insertStats() - start");
         SQLiteDatabase db = this.getWritableDatabase();
         return db.insert(TABLE_STATS, null, content);
+    }
+
+    public List<String> getStatsList() {
+        List<String> list = new LinkedList<String>();
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor storyCursor = db.rawQuery("SELECT _id, title " +
+                "FROM " + TABLE_TEXTS + " WHERE 1", null);
+            while (storyCursor.moveToNext()){
+                String tmp = storyCursor.getString(1) + "\n";
+                Cursor statsCursor = db.rawQuery("SELECT game, yes, no " +
+                        "FROM " + TABLE_STATS + " WHERE game="+storyCursor.getString(0), null);
+                int counter = 0;
+                while (statsCursor.moveToNext()){
+                    counter++;
+                    tmp += "\t\t" +counter+". \t Ano: "+statsCursor.getString(1)+ "\t Ne: "+statsCursor.getString(2)+"\n";
+                }
+                list.add(tmp);
+                statsCursor.close();
+            }
+
+        storyCursor.close();
+        return list;
     }
 }

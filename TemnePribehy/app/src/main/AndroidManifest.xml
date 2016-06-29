@@ -45,6 +45,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cz.zcu.kiv.vaisr.temnepribehy.temnepribehy.StoryActivity" />
         </activity>
+        <activity
+            android:name=".StatsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_stats"
+            android:parentActivityName=".MenuActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/FullscreenTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="cz.zcu.kiv.vaisr.temnepribehy.temnepribehy.MenuActivity" />
+        </activity>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

@@ -389,7 +389,7 @@ public class StoryActivity extends AppCompatActivity {
     private void saveStats() {
         Log.d("TemnePribehy", " StoryActivity.saveStats()");
         if (toSave) {
-            int game = AppStatus.INSTANCE.getStoryToShow();
+            int game = AppStatus.INSTANCE.getPreviousToShow();
             int yes = AppStatus.INSTANCE.getYes();
             int no = AppStatus.INSTANCE.getNo();
             int time = 666;

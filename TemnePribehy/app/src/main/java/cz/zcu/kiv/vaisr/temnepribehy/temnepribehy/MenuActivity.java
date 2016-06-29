@@ -137,7 +137,10 @@ public class MenuActivity extends AppCompatActivity {
 
     public void onStatistics(View view) {
         Log.d("TemnePribehy", "MenuActivity.onStatistics()");
-        Toast.makeText(this, "Statistiky", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(this, StatsActivity.class);
+        startActivity(i);
+
+        //Toast.makeText(this, "Statistiky", Toast.LENGTH_SHORT).show();
     }
 
     public void onSettings(View view) {
@@ -146,7 +149,7 @@ public class MenuActivity extends AppCompatActivity {
 
     public void onDownload(View view) {
         Log.d("TemnePribehy", "MenuActivity.onDownload()");
-        Toast.makeText(this, "Stahování", Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(this, "Stahování", Toast.LENGTH_SHORT).show();
         updateStories();
     }
 
@@ -205,7 +208,11 @@ public class MenuActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... sUrl) {
             Log.d("TemnePribehy", " doInBack() - start");
-            downloadXmlFile(AppStatus.INSTANCE.downloadUrl + "/" + AppStatus.INSTANCE.remoteStoryFile);
+            String result = downloadXmlFile(AppStatus.INSTANCE.downloadUrl + "/" + AppStatus.INSTANCE.remoteStoryFile);
+            if(result != null){
+                Log.e("TemnePribehy", "doInBack() NEt error: "+result);
+                return getString(R.string.download_error_content);
+            }
             Log.v("TemnePribehy", " doInBack() - xmlDownloaded");
             new XmlStoryParser(AppStatus.INSTANCE.downloadedXml);
             Log.v("TemnePribehy", " doInBack() - xmlParsed");

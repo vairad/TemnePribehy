@@ -1,0 +1,37 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context="cz.zcu.kiv.vaisr.temnepribehy.temnepribehy.StoryActivity"
+    android:id="@+id/fullscreen_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:id="@+id/listView"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="8"
+            android:scrollingCache="true"
+            android:smoothScrollbar="false"
+            android:scrollIndicators="right"
+            android:choiceMode="none"
+            android:layout_margin="10dp"
+            android:padding="10dp" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/back"
+            android:id="@+id/button"
+            android:layout_gravity="center_horizontal"
+            android:onClick="onBack" />
+    </LinearLayout>
+
+</FrameLayout>

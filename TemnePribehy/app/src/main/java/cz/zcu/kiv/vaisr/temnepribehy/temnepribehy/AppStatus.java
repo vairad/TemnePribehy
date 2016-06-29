@@ -47,6 +47,7 @@ public class AppStatus {
 
     /** atributy stavu hry */
     private volatile int  storyToShow = 1;
+    private volatile int previousToShow = 1;
     private volatile int  yes;
     private volatile int  no;
 
@@ -59,6 +60,7 @@ public class AppStatus {
 
     void moveStory() {
         SQLiteDatabase db = (Database.INSTANCE).getReadableDatabase();
+        previousToShow = storyToShow;
 
         Log.i("TemnePribehy", "AppStatus().moveStory() - select all stories: " + storyToShow);
         Cursor constantCursor = db.rawQuery("SELECT * " +
@@ -78,6 +80,10 @@ public class AppStatus {
         return storyToShow;
     }
 
+    int getPreviousToShow(){
+        Log.v("TemnePribehy", "AppStatus().getPrevToShow()");
+        return previousToShow;
+    }
     public int getYes() {
         Log.v("TemnePribehy", "AppStatus().getYes()");
         return yes;
@@ -103,6 +109,7 @@ public class AppStatus {
         status.setProperty("yes", Integer.toString(yes));
         status.setProperty("no", Integer.toString(no));
         status.setProperty("story", Integer.toString(storyToShow));
+        status.setProperty("prev", Integer.toString(previousToShow));
 
         try {
             FileOutputStream fs = new FileOutputStream(context.getFilesDir()+"/setup.xml", false );
@@ -128,6 +135,7 @@ public class AppStatus {
         yes = Integer.valueOf(status.getProperty("yes"));
         no = Integer.valueOf(status.getProperty("no"));
         storyToShow = Integer.valueOf(status.getProperty("story"));
+        previousToShow = Integer.valueOf(status.getProperty("prev"));
     }
 
     public void resetStoryNumber() {

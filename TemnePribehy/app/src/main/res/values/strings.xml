@@ -36,4 +36,6 @@
     <string name="no">Ne!</string>
     <string name="download_error">"Chyba stahování: "</string>
     <string name="download_complete">Databáze příběhů byla aktualizována</string>
+    <string name="download_error_content">Nelze stáhnout databázi příběhů</string>
+    <string name="title_activity_stats">Statistiky</string>
 </resources>
